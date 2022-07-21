@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        
+        <div>
+            <input type ="text" id="amount"><!-- comment -->
+            <p id='balance'></p>
+            <button id='deposit'>Deposit</button>
+            <button id='withdraw'>Withdraw</button>
+            <script src="https://cd.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.36/dist/web3.min,js"></script>
+            <script src="https://code.jquery.com/jquery-3.3.1.slim.min,js" crossorigin="anonymous"></script>
+             
+            <script>
+                var contract;
+                $(document).ready(function()
+                {
+                    web3 =new Web3(web3.currentProvider);
+                    
+                    var address="0x5B38Da6a701c568545dCfcB03FcB875f56beddC4";
+                    var abi=[
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "amt",
+				"type": "int256"
+			}
+		],
+		"name": "deposit",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "amt",
+				"type": "int256"
+			}
+		],
+		"name": "withdraw",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getBalance",
+		"outputs": [
+			{
+				"name": "",
+				"type": "int256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	}
+];
+                            
+                    contract = new web3.eth.Contract(abi,address);
+                    
+                    contract.getBalance().call().then(function(bal)
+                    {
+                        $('#balance').html(bal);
+                        
+                    });
+                    
+                });
+                
+                $('#desposit').click(function()
+                {
+                    var amt=0;
+                    amt=parseInt($('#amount').val());
+                    web3.eth.getAccounts().then(function(account)
+                    {
+                        var acc=accounts[0];
+                        return contract.methods.deposit(amt).send({from:acc});
+                        
+                    }).then(function(tx)
+                    {
+                        console.log(tx);
+                    }).catch (function(tx)
+                    {
+                      console.log(tx);  
+                    })
+
+                    
+                })
+              $('#withdraw').click(function()
+                {
+                    var amt=0;
+                    amt=parseInt($('#amount').val());
+                    web3.eth.getAccounts().then(function(account)
+                    {
+                        var acc=accounts[0];
+                        return contract.methods.withdraw(amt).send({from:acc});
+                        
+                    }).then(function(tx)
+                    {
+                        console.log(tx);
+                    }).catch (function(tx)
+                    {
+                      console.log(tx);  
+                    })
+
+                    
+                })
+                
+                
+            </script>
+       </div>
+    </body>
+</html>
